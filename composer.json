@@ -1,0 +1,24 @@
+{
+    "name": "tomasstrejcek/phpci-simple-slack-notify-plugin",
+    "description": "Plugin for PHPCI",
+    "authors": [
+        {
+            "name": "tomas.strejcek",
+            "email": "tomas.strejcek@ecommerceholding.cz"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "phpci": {
+            "pluginNamespace": "ECH\\PhpCIPlugins\\",
+            "suppliedPlugins": [
+                {"name": "SimpleSlackNotify", "class": "SimpleSlackNotifyPlugin"}
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "ECH\\PhpCIPlugins\\": ""
+        }
+    }
+}
