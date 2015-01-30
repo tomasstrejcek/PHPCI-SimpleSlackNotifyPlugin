@@ -32,7 +32,7 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
         $this->build = $build;
 
         if (!is_array($options) || !isset($options['webhook'])) {
-            throw new \Exception('Please define the webhook_url for slack_notify plugin!');
+            throw new \Exception('Please define the webhook_url for SimpleSlackNotify plugin!');
         }
         $this->webHook = trim($options['webhook']);
 
