@@ -15,7 +15,6 @@ use PHPCI\Model\Build;
 class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
 {
     private $webHook;
-    private $channel;
     private $username;
     private $message;
     private $icon;
@@ -33,14 +32,9 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
         $this->build = $build;
 
         if (!is_array($options) || !isset($options['webhook'])) {
-
-        }
-        $this->webHook = trim($options['webhook']);
-
-        if (!is_array($options) || !isset($options['room'])) {
             throw new \Exception('Please define the webhook_url for slack_notify plugin!');
         }
-        $this->channel = $options['channel'];
+        $this->webHook = trim($options['webhook']);
 
         if (isset($options['message'])) {
             $this->message = $options['message'];
@@ -49,7 +43,6 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
             $this->message .= 'for commit <%COMMIT_URI%|%SHORT_COMMIT% (%COMMIT_EMAIL%)> ';
             $this->message .= 'on branch <%BRANCH_URI%|%BRANCH%>';
         }
-
 
         if (isset($options['username'])) {
             $this->username = $options['username'];
@@ -60,7 +53,6 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
         if (isset($options['icon'])) {
             $this->icon = $options['icon'];
         }
-
 
     }
 
@@ -128,6 +120,7 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
         );
 
         $success = true;
+
         try {
 
             $data = http_build_query(array(
@@ -140,7 +133,6 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_URL, $this->webHook);
             $result = curl_exec($ch);
-            $chinfo = curl_getinfo($ch);
             if(!$result) {
                 throw new \Exception(curl_error($ch), curl_errno($ch));
             }
@@ -149,6 +141,7 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
         } catch (\Exception $e) {
             $this->phpci->log($e->getMessage());;
         }
+
         return $success;
     }
 }
