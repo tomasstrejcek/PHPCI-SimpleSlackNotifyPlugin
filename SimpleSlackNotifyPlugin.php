@@ -121,8 +121,8 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
 
         $attachment = array(
             'fallback' => $message,
-            'title' => $message,
-            'text' => '',
+            //'title' => ,
+            'text' => '$message',
             'color' => $color,
             'fields' => $fields
         );
