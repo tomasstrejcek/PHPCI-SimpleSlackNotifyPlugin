@@ -66,13 +66,7 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
 
         $successfulBuild = $this->build->isSuccessful();
 
-        $buildMsg = $this->build->getLog();
 
-        $buildMsg = str_replace('[0;32m', '', $buildMsg);
-        $buildMsg = str_replace('/[0m', '', $buildMsg);
-        $buildMsg = str_replace('[0m', '', $buildMsg);
-
-        $buildmessages = explode('RUNNING PLUGIN: ', $buildMsg);
 
         if ($successfulBuild) {
             $status = 'Success';
@@ -89,34 +83,53 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
             'short' => true
         ));
 
-        foreach ($buildmessages as $bm) {
+        if($this->build->getProject()->getBranch() == $this->build->getBranch()) {
 
-            $pos = mb_strpos($bm, "\n");
-            $firstRow = mb_substr($bm, 0, $pos);
+            $buildMsg = $this->build->getLog();
 
-            //skip long outputs
-            if ($firstRow == 'slack_notify') continue;
-            if ($firstRow == 'php_loc') continue;
+            $buildMsg = str_replace('[0;32m', '', $buildMsg);
+            $buildMsg = str_replace('[0;31m', '', $buildMsg);
+            $buildMsg = str_replace('/[0m', '', $buildMsg);
+            $buildMsg = str_replace('[0m', '', $buildMsg);
 
+            $buildmessages = explode('RUNNING PLUGIN: ', $buildMsg);
+
+            foreach ($buildmessages as $bm) {
+
+                $pos = mb_strpos($bm, "\n");
+                $firstRow = mb_substr($bm, 0, $pos);
+
+                //skip long outputs
+                if ($firstRow == 'slack_notify') continue;
+                if ($firstRow == 'php_loc') continue;
+
+                $fields[] = array(
+                    'title' => 'RUNNING PLUGIN: ' . $firstRow,
+                    'value' => $firstRow == 'composer' ? '' : mb_substr($bm, $pos),
+                    'short' => false
+                );
+
+            }
+
+        } else {
             $fields[] = array(
-                'title' => 'RUNNING PLUGIN: ' . $firstRow,
-                'value' => $firstRow == 'composer' ? '' : mb_substr($bm, $pos),
-                'short' => false
+                'title' => 'non-default branch build',
+                'value' => 'skippping long message',
+                'short' => true 
             );
-
         }
 
         $attachment = array(
             'fallback' => $message,
             'title' => $message,
+            'text' => $message,
             'color' => $color,
             'fields' => $fields
         );
 
         $payload = array(
             'username' => $this->username,
-            'icon_emoji' => $this->icon,
-            'text' => ''
+            'icon_emoji' => $this->icon
         );
 
         $success = true;
