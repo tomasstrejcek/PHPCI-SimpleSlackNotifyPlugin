@@ -115,14 +115,14 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
             $fields[] = array(
                 'title' => 'non-default branch build',
                 'value' => 'skippping long message',
-                'short' => true 
+                'short' => true
             );
         }
 
         $attachment = array(
             'fallback' => $message,
             'title' => $message,
-            'text' => $message,
+            'text' => '',
             'color' => $color,
             'fields' => $fields
         );
