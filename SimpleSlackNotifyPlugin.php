@@ -67,7 +67,6 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
         $successfulBuild = $this->build->isSuccessful();
 
 
-
         if ($successfulBuild) {
             $status = 'Success';
             $color = 'good';
@@ -78,12 +77,16 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
 
         // Build up the attachment data
         $fields = array(array(
+            'title' => 'Report type',
+            'value' => $message,
+            'short' => false
+        ), array(
             'title' => 'Status',
             'value' => $status,
             'short' => true
         ));
 
-        if($this->build->getProject()->getBranch() == $this->build->getBranch()) {
+        if ($this->build->getProject()->getBranch() == $this->build->getBranch()) {
 
             $buildMsg = $this->build->getLog();
 
@@ -121,8 +124,6 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
 
         $attachment = array(
             'fallback' => $message,
-            //'title' => ,
-            'text' => '$message',
             'color' => $color,
             'fields' => $fields
         );
@@ -146,7 +147,7 @@ class SimpleSlackNotifyPlugin implements \PHPCI\Plugin
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_URL, $this->webHook);
             $result = curl_exec($ch);
-            if(!$result) {
+            if (!$result) {
                 throw new \Exception(curl_error($ch), curl_errno($ch));
             }
             curl_close($ch);
